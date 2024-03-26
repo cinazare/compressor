@@ -173,4 +173,88 @@ def huffman_tree_maker(huffman_list):
                 huffman_list.insert(index, new_node)
                 break
 
+def get_dictonary(adress):
+    dictionary_file = open(adress, "rb")
+    dictionary = dictionary_file.readlines()
+    dictionary_file.close()
+
+
+
+    # solving ',' problem
+    dictionary_1 = dictionary[0].decode()
+    if dictionary_1[-1] != "$":
+        dictionary_1 = dictionary_1 + dictionary[1].decode()
+    dictionary_1 = dictionary_1[:len(dictionary_1)-2]
+
+
+
+
+    lenth = str()
+    for temp in range(1,len(dictionary_1)):
+        if dictionary_1[len(dictionary_1) - temp] == "$":
+            lenth = dictionary_1[(len(dictionary_1) - temp) + 1:]
+            dictionary_1 = dictionary_1[:(len(dictionary_1) - temp)]
+            break
+    lenth = int(lenth)
+
+
+
+    huffman_code_dict = dict()
+    while dictionary_1:
+        index = 0
+        if dictionary_1[0] == "\n":
+            
+            index = 1
+            while dictionary_1[index] == "1" or dictionary_1[index] == "0":
+                index+=1                
+            huffman_code_dict[dictionary_1[1:index]] = "/n"  
+            dictionary_1 = dictionary_1[index:]
+            continue
+        
+        
+        elif dictionary_1[0] == "'" and dictionary_1[2] == "'":
+            if dictionary_1[1] == "1" or dictionary_1[1] == "0":
+                
+                temp = dictionary_1[1]
+                index = 3
+                while dictionary_1[index] == "1" or dictionary_1[index] == "0":
+                    index+=1
+                huffman_code_dict[dictionary_1[3:index]] =  temp
+                dictionary_1 = dictionary_1[index:]
+                continue
+            
+        
+        
+        elif dictionary_1[0] != "0" and dictionary_1[0] != "1":
+            
+            temp = dictionary_1[0]
+            index = 1
+            
+            try:
+                while dictionary_1[index] == "1" or dictionary_1[index] == "0":
+                    index+=1
+                huffman_code_dict[dictionary_1[1:index]] = temp 
+                dictionary_1 = dictionary_1[index:]
+                continue  
+            
+            except:
+                huffman_code_dict[dictionary_1[1:]] = temp
+                dictionary_1 = ""
+
+
+    return [huffman_code_dict,lenth]
+
+
+
+
+
+
+
+
+
+
+
+
+def decoder(adress):
+    result = get_dictonary(adress)
 
