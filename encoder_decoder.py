@@ -1,4 +1,4 @@
-from tree_maker import *
+from .tree_maker import *
 
 def encoder(adress):
     tree_node_dict = get_data_from_txt(adress)
@@ -246,10 +246,54 @@ def get_dictonary(adress):
 
 
 
+def txt_decoder(huffman_code_dict, lenth, adress):
+    compressed = open(adress, "rb")
+    data = compressed.readlines()
+    compressed.close()
+    sum_line = b""
+    for temp in data[2:]:
+        sum_line += temp  
+    data = list(sum_line)
 
 
+    string = str()
+    for temp in data:
+        binary = bin(temp)[2:]
+        if len(binary) < 8:
+            x = 8 - len(binary)
+            binary = x*"0" + binary
+        string = string + binary
+    
+    
+    string = string[:lenth]
+    
+    new_address = adress
+    for temp in range(1,len(new_address)):
+        if new_address[-1] == "/":
+            new_address = new_address[:-1]
+            break    
+        else:
+            new_address = new_address[:-1]
+    
+    print(adress)
 
-
+    de_compressed = open(new_address + "/de_compressed.txt", "w")
+    de_compressed.close()
+    de_compressed = open(new_address + "/de_compressed.txt", "a")
+    
+    temp_digit = str()
+    for index in range(len(string)):
+        temp_digit = temp_digit + string[index]
+        for key, value in huffman_code_dict.items():
+            if temp_digit == key:
+                if value == "/n":
+                    de_compressed.write("\n")
+                    temp_digit = ""
+                    break
+                else:
+                    de_compressed.write(value)
+                    temp_digit = ""
+                    break
 
 
 
@@ -257,4 +301,6 @@ def get_dictonary(adress):
 
 def decoder(adress):
     result = get_dictonary(adress)
-
+    dictionary = result[0]
+    lenth = result[1]
+    txt_decoder(dictionary, lenth, adress)
