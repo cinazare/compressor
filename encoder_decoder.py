@@ -1,4 +1,4 @@
-from .tree_maker import *
+from tree_maker import *
 
 def encoder(adress):
     tree_node_dict = get_data_from_txt(adress)
